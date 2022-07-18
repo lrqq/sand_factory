@@ -22,5 +22,4 @@ urlpatterns = [
     path('login/', include('login.urls')),
     path('index/', include('index.urls')),
     path('logout/', include('logout.urls')),
-    re_path(r'^(?P<path>.*)$', views.getImage),
 ]
