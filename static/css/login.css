@@ -1,0 +1,104 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+.container {
+    width: 100%;
+    height: 100%;
+    background-color: #989696;
+    position: relative;
+}
+.container .login-box {
+    width: 500px;
+    height: 400px;
+    background-color: #fff;
+    border-radius: 8px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.container ,.login-box::before{
+    background:url('/bg.png') 0 / cover fixed;
+}
+.login-box::before{
+    content:'';
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    filter:blur(10px) contrast(.8);
+    z-index:-1;
+}
+.login-box .title {
+    text-align: center;
+    color: #fff;
+    font-size: 32px;
+    padding: 24px;
+    margin: 24px 0 8px 0;
+}
+.input-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.sf-input {
+    width: 240px;
+    height: 36px;
+    line-height: 36px;
+    margin: 12px 0;
+    border-radius: 4px;
+    outline: none;
+    border: none;
+    padding: 0 8px;
+    border: 1px solid transparent;
+}
+.sf-input:focus {
+    border: 1px solid #3c57b3;
+}
+.login-btn {
+    width: 120px;
+    height: 46px;
+    line-height: 46px;
+    padding: 0 20px;
+    color: #fff;
+    background-color: #409eff;
+    border-radius: 23px;
+    text-align: center;
+    margin-top: 24px;
+    user-select: none;
+}
+.login-btn:hover {
+    background-color: #66b1ff;
+    cursor: pointer;
+}
+.jitter {
+    animation: jitter 0.5s 1;
+}
+@keyframes jitter {
+    0% {
+        margin-left: 0px;
+    }
+    25% {
+        margin-left: 10px;
+    }
+    50% {
+        margin-left: -10px;
+    }
+    75% {
+        margin-left: 10px;
+    }
+    100% {
+        margin-left: 0px;
+    }
+}
+.note {
+    color: red;
+    text-align: center;
+}

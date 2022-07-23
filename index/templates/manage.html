@@ -1,0 +1,483 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户界面</title>
+    <link rel="stylesheet" href="{% static 'css/manage.css' %}">
+    <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+    <script>
+        // 设置默认展示模块
+        window.sessionStorage.userInfo = true
+        let selectModel = 'item1'
+        // 判断用户是否已经登录，若未登录则返回登录界面
+        window.onload = function () {
+            if (!window.sessionStorage.userInfo) {
+                window.location.href = `${location.origin}/login/`
+            }
+            // 展示默认模块
+            document.getElementById(`tab-${selectModel}`).classList.toggle('selected')
+            document.getElementById(`content-${selectModel}`).classList.toggle('hidden')
+        }
+    </script>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content flexbox">
+            <div class="head-title">智慧砂场云平台</div>
+            <div class="logout" onclick="logout()">退出登录</div>
+        </div>
+    </div>
+    <div class="content">
+        <div class="sf-tab">
+            <div class="sf-tab-item" id="tab-item1" onclick="selectTab('item1')">自动/人工控制</div>
+            <div class="sf-tab-item" id="tab-item2" onclick="selectTab('item2')">数据库管理</div>
+            <div class="sf-tab-item" id="tab-item3" onclick="selectTab('item3')">用户管理</div>
+            <div class="sf-tab-item" id="tab-item4" onclick="selectTab('item4')">砂矿设置</div>
+            <div class="sf-tab-item" id="tab-item5" onclick="selectTab('item5')">车辆数据查询</div>
+        </div>
+        <!-- 自动/人工控制模块 -->
+        <div id="content-item1" class="hidden">
+            <div class="mb10">
+                <button id="manual" class="sf-btn" type="default" onclick="toggle()">人工控制</button>
+            </div>
+            <div class="mb10">
+                <button class="sf-btn">启动系统</button>
+                <button class="sf-btn">系统重启</button>
+                <button class="sf-btn">关闭系统</button>
+            </div>
+            <div class="mb10">
+                <button class="sf-btn manual-btn" disabled="disabled" onclick="startCar()">开车</button>
+                <button class="sf-btn manual-btn" disabled="disabled" onclick="stopCar()">停车</button>
+                <button class="sf-btn manual-btn" disabled="disabled" onclick="barrierOn()">道闸起</button>
+                <button class="sf-btn manual-btn" disabled="disabled" onclick="barrierOff()">道闸落</button>
+                <button class="sf-btn manual-btn" disabled="disabled">发送控制指令</button>
+                <button class="sf-btn manual-btn" disabled="disabled" onclick="request_snap()">拍照</button>
+            </div>
+            <div id="table-item1" class="sf-table" align="left">
+                <div class="sf-table-head">
+                    <div class="sf-table-head-col">系统运行状态</div>
+                </div>
+                <div class="sf-table-content">
+                    <div class="sf-table-content-col">system on...</div>
+                </div>
+                <div class="sf-table-content">
+                    <img id="snap_jpg" src="" width=320px height=240px  alt="请拍照"/>
+                </div>
+                <div class="sf-table-content">
+                    <div id="sandKinds" class="sf-table-content-col">识别的砂石种类为：</div>
+                </div>
+                <div class="sf-table-content">
+                    <div class="sf-table-content-col"></div>
+                </div>
+                <div class="sf-table-content">
+                    <div class="sf-table-content-col"></div>
+                </div>
+            </div>
+        </div>
+        <!-- 数据库管理 -->
+        <div id="content-item2" class="hidden">
+            <div class="mb10">
+                <button id="link-db" class="sf-btn" onclick="linkDB()">连接数据库</button>
+                <button class="sf-btn">查询全部数据</button>
+                <button class="sf-btn">条件查询</button>
+            </div>
+            <div class="mb10">
+                <div class="info-col flexbox">
+                    <div class="sf-info-box">
+                        <div class="label">起始日期：</div>
+                        <input id="license-plate" type="date" class="sf-input">
+                    </div>
+                    <div class="sf-info-box">
+                        <div class="label">截止日期：</div>
+                        <input id="empty-weight" type="date" class="sf-input">
+                    </div>
+                    <div></div>
+                </div>
+            </div>
+            <div id="sf-table" class="sf-table">
+                <div class="sf-table-head">
+                    <div class="sf-table-head-col">ID</div>
+                    <div class="sf-table-head-col">车牌号</div>
+                    <div class="sf-table-head-col">空车</div>
+                    <div class="sf-table-head-col">载重</div>
+                    <div class="sf-table-head-col">净重</div>
+                    <div class="sf-table-head-col">种类</div>
+                    <div class="sf-table-head-col">单价</div>
+                    <div class="sf-table-head-col">余额</div>
+                    <div class="sf-table-head-col">日期</div>
+                </div>
+                <div class="sf-table-content">
+                    <div class="sf-table-content-col">sd6f54</div>
+                    <div class="sf-table-content-col">浙C12345</div>
+                    <div class="sf-table-content-col">5</div>
+                    <div class="sf-table-content-col">沙</div>
+                    <div class="sf-table-content-col">9</div>
+                    <div class="sf-table-content-col">45</div>
+                    <div class="sf-table-content-col">12</div>
+                    <div class="sf-table-content-col">123</div>
+                    <div class="sf-table-content-col">2022-07-17</div>
+                </div>
+                <div class="sf-table-content">
+                    <div class="sf-table-content-col"></div>
+                    <div class="sf-table-content-col"></div>
+                    <div class="sf-table-content-col"></div>
+                    <div class="sf-table-content-col"></div>
+                    <div class="sf-table-content-col"></div>
+                    <div class="sf-table-content-col"></div>
+                    <div class="sf-table-content-col"></div>
+                    <div class="sf-table-content-col"></div>
+                    <div class="sf-table-content-col"></div>
+                </div>
+                <div class="sf-table-content">
+                    <div class="sf-table-content-col"></div>
+                    <div class="sf-table-content-col"></div>
+                    <div class="sf-table-content-col"></div>
+                    <div class="sf-table-content-col"></div>
+                    <div class="sf-table-content-col"></div>
+                    <div class="sf-table-content-col"></div>
+                    <div class="sf-table-content-col"></div>
+                    <div class="sf-table-content-col"></div>
+                    <div class="sf-table-content-col"></div>
+                </div>
+                <div class="sf-table-content">
+                    <div class="sf-table-content-col"></div>
+                    <div class="sf-table-content-col"></div>
+                    <div class="sf-table-content-col"></div>
+                    <div class="sf-table-content-col"></div>
+                    <div class="sf-table-content-col"></div>
+                    <div class="sf-table-content-col"></div>
+                    <div class="sf-table-content-col"></div>
+                    <div class="sf-table-content-col"></div>
+                    <div class="sf-table-content-col"></div>
+                </div>
+                <div class="sf-table-content">
+                    <div class="sf-table-content-col"></div>
+                    <div class="sf-table-content-col"></div>
+                    <div class="sf-table-content-col"></div>
+                    <div class="sf-table-content-col"></div>
+                    <div class="sf-table-content-col"></div>
+                    <div class="sf-table-content-col"></div>
+                    <div class="sf-table-content-col"></div>
+                    <div class="sf-table-content-col"></div>
+                    <div class="sf-table-content-col"></div>
+                </div>
+            </div>
+        </div>
+        <!-- 用户管理 -->
+        <div id="content-item3" class="hidden">
+            <div class="item-title">创建新用户</div>
+            <div class="info-col flexbox">
+                <div class="sf-info-box">
+                    <div class="label">公司名称：</div>
+                    <input id="firm_name" type="text" class="sf-input">
+                </div>
+                <div class="sf-info-box">
+                    <div class="label">车牌号：</div>
+                    <input id="license_plate" type="text" class="sf-input">
+                </div>
+                <div class="sf-info-box">
+                    <div class="label">司机姓名：</div>
+                    <input id="driver_name" type="text" class="sf-input">
+                </div>
+            </div>
+            <div class="info-col flexbox">
+                <div class="sf-info-box">
+                    <div class="label">性别：</div>
+                    <input id="driver_gender" type="text" class="sf-input">
+                </div>
+                <div class="sf-info-box">
+                    <div class="label">身份证号：</div>
+                    <input id="idcard_number" type="text" class="sf-input">
+                </div>
+                <div class="sf-info-box">
+                    <div class="label">手机号码：</div>
+                    <input id="phone_number" type="text" class="sf-input">
+                </div>
+            </div>
+            <div class="info-col flexbox">
+                <div class="sf-info-box">
+                    <div class="label">预存金额：</div>
+                    <input id="pre_deposit_amount" type="number" min="1" max="99999" class="sf-input">
+                    <div style="padding-left: 5px">元</div>
+                </div>
+                <div class="sf-btn" onclick="createNewUser()">提交</div>
+            </div>
+            <div class="split-line"></div>
+            <div class="item-title">账户充值</div>
+            <div class="info-col flexbox">
+                <div class="sf-info-box">
+                    <div class="label">公司名称：</div>
+                    <input id="firm_name2" type="text" class="sf-input">
+                </div>
+                <div class="sf-info-box">
+                    <div class="label">充值金额：</div>
+                    <input id="topup_amount" type="text" class="sf-input">
+                    <div style="padding-left: 5px">元</div>
+                </div>
+                <div class="sf-info-box">
+                </div>
+            </div>
+            <div class="info-col flexbox">
+                <div></div>
+                <div class="sf-btn">充值</div>
+            </div>
+        </div>
+        <!-- 砂矿设置 -->
+        <div id="content-item4" class="hidden">
+            <div class="flexbox mb10">
+                <div class="item-title">
+                    设置单价
+                </div>
+                <div class="sf-btn">数据导出</div>
+            </div>
+            <div class="info-col flexbox">
+                <div class="sf-info-box">
+                    <select class="sf-select mr10">
+                        <option value="1">类型1</option>
+                        <option value="2">类型2</option>
+                        <option value="3">类型3</option>
+                        <option value="4">类型4</option>
+                    </select>
+                    <input id="" type="number" class="sf-input">
+                </div>
+            </div>
+            <div class="info-col flexbox">
+                <div class="sf-info-box">
+                </div>
+                <div class="sf-btn", onclick="placerAmount()">提交</div>
+            </div></div>
+        <!-- 车辆数据查询 -->
+        <div id="content-item5" class="hidden">
+            <div class="info-col flexbox">
+                <div class="sf-info-box">
+                    <div class="label">车牌号：</div>
+                    <input id="" type="text" class="sf-input" readonly>
+                </div>
+                <div class="sf-info-box">
+                    <div class="label">空车重量：</div>
+                    <input id="" type="text" class="sf-input" readonly>
+                </div>
+                <div class="sf-info-box">
+                    <div class="label">载重重量：</div>
+                    <input id="" type="text" class="sf-input" readonly>
+                </div>
+            </div>
+            <div class="info-col flexbox">
+                <div class="sf-info-box">
+                    <div class="label">砂矿种类：</div>
+                    <input id="" type="text" class="sf-input" readonly>
+                </div>
+                <div class="sf-info-box">
+                    <div class="label">砂矿单价：</div>
+                    <input id="" type="text" class="sf-input" readonly>
+                </div>
+                <div class="sf-info-box">
+                </div>
+            </div>
+            <div class="info-col flexbox">
+                <div></div>
+                <div class="sf-btn">查询</div>
+            </div>
+            <div class="split-line"></div>
+            <div id="table-item1" class="sf-table" align="left">
+                <div class="sf-table-head">
+                    <div class="sf-table-head-col">查询记录</div>
+                </div>
+                <div class="sf-table-content">
+                    <div class="sf-table-content-col">桂A-12345</div>
+                </div>
+                <div class="sf-table-content">
+                    <div class="sf-table-content-col"></div>
+                </div>
+                <div class="sf-table-content">
+                    <div class="sf-table-content-col"></div>
+                </div>
+                <div class="sf-table-content">
+                    <div class="sf-table-content-col"></div>
+                </div>
+                <div class="sf-table-content">
+                    <div class="sf-table-content-col"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function logout() {
+            delete window.sessionStorage.userInfo
+            window.location.href = `${location.origin}/logout/`
+        }
+
+        function selectTab(model) {
+            // 隐藏原展示模块
+            document.getElementById(`tab-${selectModel}`).classList.toggle('selected')
+            document.getElementById(`content-${selectModel}`).classList.toggle('hidden')
+            // 展示新模块
+            document.getElementById(`tab-${model}`).classList.toggle('selected')
+            document.getElementById(`content-${model}`).classList.toggle('hidden')
+            // 替换当前展示模块
+            selectModel = model
+        }
+
+        function toggle() {
+            console.log("toggle");
+            const type = document.getElementById('manual').getAttribute('type')
+            const btns = document.getElementsByClassName('manual-btn')
+            if (type === 'default') {
+                document.getElementById('manual').setAttribute('type', 'submit')
+                for (let i = 0; i < btns.length; i++) {
+                    btns[i].removeAttribute('disabled')
+                }
+            } else {
+                document.getElementById('manual').setAttribute('type', 'default')
+                for (let i = 0; i < btns.length; i++) {
+                    btns[i].setAttribute('disabled', 'disabled')
+                }
+            }
+        }
+
+        function linkDB() {
+            const linkType = document.getElementById('link-db')
+            if (linkType.textContent === '连接数据库') {
+                linkType.textContent = '断开连接'
+            } else {
+                linkType.textContent = '连接数据库'
+            }
+        }
+
+        function startCar(){
+            let msg = "1";
+            console.log("start");
+            $.ajax({
+                {#调用Ajax指令#}
+                url:"{% url "pubMsg" %}",
+                method:'post', //使用post方式
+                headers:{'X-CSRFToken':'{{csrf_token}}'},  // 注意放到引号里面
+                data:{publish_msg:msg},         //传递参数
+                success: function (data) {
+                console.log('success')
+            }
+            })
+        }
+
+        function stopCar(){
+            let msg = "0";
+            console.log("stop");
+            $.ajax({
+                {#调用Ajax指令#}
+                url:"{% url "pubMsg" %}",
+                method:'post', //使用post方式
+                headers:{'X-CSRFToken':'{{csrf_token}}'},  // 注意放到引号里面
+                data:{publish_msg:msg},         //传递参数
+                success: function (data) {
+                console.log('success')
+            }
+            })
+        }
+
+        
+        function barrierOn(){
+            let msg = "3";
+            console.log("barrier on");
+            $.ajax({
+                {#调用Ajax指令#}
+                url:"{% url "pubMsg" %}",
+                method:'post', //使用post方式
+                headers:{'X-CSRFToken':'{{csrf_token}}'},  // 注意放到引号里面
+                data:{publish_msg:msg},         //传递参数
+                success: function (data) {
+                console.log('success')
+            }
+            })
+        }
+
+        
+        function barrierOff(){
+            let msg = "4";
+            console.log("barrier off");
+            $.ajax({
+                {#调用Ajax指令#}
+                url:"{% url "pubMsg" %}",
+                method:'post', //使用post方式
+                headers:{'X-CSRFToken':'{{csrf_token}}'},  // 注意放到引号里面
+                data:{publish_msg:msg},         //传递参数
+                success: function (data) {
+                console.log('success')
+            }
+            })
+        }
+
+
+        function request_snap() {
+            $.ajax({
+                'url': 'snap',  //访问的url地址
+                'dateType': 'json',  //想要获得的返回数据类型
+                success: function (data){
+                console.log(data);
+                let path=data.src;
+                let res="";
+                document.getElementById('snap_jpg').src=path
+                if(data.label == "0")
+                  res="空车"
+                else if(data.label == "1")
+                  res="种类1";
+                else if(data.label == "2")
+                  res="种类2"
+                document.getElementById('sandKinds').innerHTML = "识别的砂石种类为："+res
+            }
+            })
+        }
+
+        function createNewUser() {
+            let newUserInput = $('#content-item3').find("input");
+            let data = []
+            for (let i = 0;i<newUserInput.length;i++)
+		        data[i] = newUserInput[i].value,
+                console.log(newUserInput[i].value)
+            console.log("遍历赋值："+data)
+            $.ajax({
+                url:"{% url "manageInfo" %}",
+                method:'post',
+                headers:{'X-CSRFToken':'{{csrf_token}}'},
+                data:{
+                    "firm_name":data[0],
+                    "license_plate":data[1],
+                    "driver_name":data[2],
+                    "driver_gender":data[3],
+                    "idcard_number":data[4],
+                    "phone_number":data[5],
+                    "pre_deposit_amount":data[6],
+                },
+                'dateType': 'json',  //想要获得的返回数据类型
+                success: function (data){
+                console.log(data);
+            }
+            })
+        }
+
+        function placerAmount(){
+            $.ajax({
+                url:"{% url "manageInfo" %}",
+                method:'post',
+                headers:{'X-CSRFToken':'{{csrf_token}}'},
+                data:{
+                    "firm_name":data[0],
+                    "license_plate":data[1],
+                    "driver_name":data[2],
+                    "driver_gender":data[3],
+                    "idcard_number":data[4],
+                    "phone_number":data[5],
+                    "pre_deposit_amount":data[6],
+                },
+                'dateType': 'json',  //想要获得的返回数据类型
+                success: function (data){
+                console.log(data);
+            }
+            })
+        }
+
+    </script>
+</body>
+</html>

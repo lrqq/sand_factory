@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录</title>
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+</head>
+<body style="background-image: url({% static 'images/bg.png' %});background-repeat:no-repeat;">
+    <div class="container">
+        <div class="login-box">
+            <div class="title", style="color: #3c57b3">智慧砂场云平台</div>
+            <div class="input-box">
+                <input id="username" type="text" class="sf-input" placeholder="用户名">
+            </div>
+            <div class="input-box">
+                <input id="password" type="password" class="sf-input" placeholder="密码">
+            </div>
+            <div id="note" class="note"></div>
+            <div id="login-btn" class="login-btn" onclick="login()">登录</div>
+        </div>
+    </div>
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <script>
+        function login(){
+            const username = document.getElementById('username').value
+            const password = document.getElementById('password').value
+            const note = document.getElementById('note')
+            const loginBtn = document.getElementById('login-btn')
+            $.ajax({
+                {#调用Ajax指令#}
+                url:"{% url "user_login" %}",
+                method:'post', //使用post方式
+                headers:{'X-CSRFToken':'{{csrf_token}}'},  // 注意放到引号里面
+                data:{user:username, pwd:password},         //传递参数
+                success: function (res){
+                    let data = JSON.parse(res);
+                    console.log(data)
+                    if (data["flag"]){
+                        window.location.href = "/index/"
+                    }
+                    if (data["error_message"]){
+                        loginBtn.classList.toggle('jitter')
+                        setTimeout(() => {
+                            loginBtn.classList.toggle('jitter')
+                        }, 1000);
+                        note.innerHTML = '登录失败，用户名或密码错误。'
+                    }
+                }
+
+            })
+        }
+    </script>
+
+</body>
+</html>

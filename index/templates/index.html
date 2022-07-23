@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% if request.session.is_login %}
+    <h1>智慧砂场</h1>
+{% else %}
+    <h1>你尚未登陆</h1>
+{% endif %}
+<h2>{{ subscribe_msg }}</h2>
+<div id="info"></div>
+<form method="post" action="msg/">
+    {% csrf_token %}
+    <input type="hidden" name="publish_msg" value=1>
+    <input type="submit", value="开车">
+</form>
+<button id="button1", value="1", onclick="">开车</button>
+<button id="button2", value="0", onclick="stopCar()">停车</button>
+<script src="{% static 'js/jquery.js' %}"></script>
+<script>
+    $(document).ready(function (){
+        setInterval("request_data()", 20000);
+        $("#button1").click(function (){
+            let msg = document.getElementById('button1').value
+            $.ajax({
+                {#调用Ajax指令#}
+                url:"{% url "pubMsg" %}",
+                method:'post', //使用post方式
+                headers:{'X-CSRFToken':'{{csrf_token}}'},  // 注意放到引号里面
+                data:{publish_msg:msg},         //传递参数
+                success: function (data) {
+                console.log(data)
+            }
+            })
+        });
+    });
+    function stopCar(){
+            let msg = document.getElementById('button2').value
+            $.ajax({
+                {#调用Ajax指令#}
+                url:"{% url "pubMsg" %}",
+                method:'post', //使用post方式
+                headers:{'X-CSRFToken':'{{csrf_token}}'},  // 注意放到引号里面
+                data:{publish_msg:msg},         //传递参数
+                success: function (data) {
+                console.log('success')
+            }
+            })
+        }
+    function request_data() {
+            $.ajax({
+                'url': 'getInfo',  //访问的url地址
+                'dateType': 'json',  //想要获得的返回数据类型
+                success: function (data){
+                    document.getElementById('info').innerHTML = data['msg']
+                }
+            })
+        };
+</script>
+<li><a href="/logout/">退出</a></li>
+</body>
+</html>
