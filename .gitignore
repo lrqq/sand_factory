@@ -1,0 +1,4 @@
+*.pyc
+*.jpg
+myModel.bin
+myModel.param
