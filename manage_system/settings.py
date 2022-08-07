@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-++yb!tm9x7toyiuwez#dg)97t7p0yq(z2ioirq(r&r)s+#1f2d
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*',]
+ALLOWED_HOSTS = ["*",]
 
 
 # Application definition
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'polls.apps.PollsConfig',
     'login.apps.LoginConfig',
     'index.apps.IndexConfig',
 ]
@@ -123,7 +124,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 #配置静态文件路径
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static/'),
+    os.path.join(BASE_DIR, 'static'),
 )
 
 # Default primary key field type
