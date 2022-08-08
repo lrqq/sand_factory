@@ -1,3 +1,6 @@
 *.pyc
 snap.jpg
 *.jpg
+myModel.bin
+myNcnnNet
+myModel.param

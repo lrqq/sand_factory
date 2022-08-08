@@ -16,8 +16,7 @@ django.setup()
 # 建立mqtt连接
 def on_connect(client, userdata, flag, rc):
     # print("Connect with the result code " + str(rc))
-    client.subscribe('temperature', qos=2)
-
+    client.subscribe('weight', qos=2)
 
 # 接收、处理mqtt消息
 def on_message(client, userdata, msg):
