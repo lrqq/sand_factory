@@ -32,8 +32,10 @@ def publishMsg(request):
 
 
 def get_info(request):
-    return JsonResponse({"msg": global_var.get_value("msg")})
-
+    if(global_var.get_value("status") == "weight_ok"):
+        return JsonResponse({"state":"ok","car_id": global_var.get_value("car_id"),"sand_type":global_var.get_value("sand_type"),"total_weight":global_var.get_value("total_weight")})
+    else:
+        return JsonResponse({"state":"yet","car_id": "null","sand_type":"null","total_weight":"null"})
 
 def manage_info(request):
     if request.method == 'POST':
@@ -78,6 +80,7 @@ def snapImage(request):
         res = subprocess.getoutput(cmd)
         print(res)
         print("res=", res[0])
+        global_var.set_value("sand_type",res[0])
         return JsonResponse({"code": 200, "msg": "success", "label": res[0], "src": src})
     else:
         print("非linux尚未实现检测!")
