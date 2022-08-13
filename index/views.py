@@ -23,7 +23,7 @@ def publishMsg(request):
         control_msg = request.POST.get('publish_msg', None)
         print('control_msg: ', control_msg)
         if control_msg:
-            client = mqtt.Client("Temperature_Inside")
+            client = mqtt.Client("control_client")
             client.connect(mqttBroker)
             client.publish("control_msg", control_msg)
 

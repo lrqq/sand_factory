@@ -36,7 +36,7 @@
             <div class="sf-tab-item" id="tab-item2" onclick="selectTab('item2')">数据库管理</div>
             <div class="sf-tab-item" id="tab-item3" onclick="selectTab('item3')">用户管理</div>
             <div class="sf-tab-item" id="tab-item4" onclick="selectTab('item4')">砂矿设置</div>
-            <div class="sf-tab-item" id="tab-item5" onclick="selectTab('item5')">车辆数据查询</div>
+            <!-- <div class="sf-tab-item" id="tab-item5" onclick="selectTab('item5')">车辆数据查询</div> -->
         </div>
         <!-- 自动/人工控制模块 -->
         <div id="content-item1" class="hidden">
@@ -63,11 +63,44 @@
                 <div class="sf-table-content">
                     <div class="sf-table-content-col">system on...</div>
                 </div>
-                <div class="sf-table-content">
+                <div class="sf-table-content flexbox">
                     <img id="snap_jpg" src="" width=320px height=240px  alt="请拍照"/>
+                    <div id="sandKinds" class="sf-table-content-col flexbox-col">
+                        <div class="sf-table-content-child flexbox">
+                            <div class="label">车牌号：</div>
+                            <div class="value">123123</div>
+                        </div>
+                        <div class="sf-table-content-child flexbox">
+                            <div class="label">砂石种类：</div>
+                            <div class="value">123123</div>
+                        </div>
+                        <div class="sf-table-content-child flexbox">
+                            <div class="label">地磅重量：</div>
+                            <div class="value">123123</div>
+                        </div>
+                        <div class="sf-table-content-child flexbox">
+                            <div class="label">单价：</div>
+                            <div class="value">123123</div>
+                        </div>
+                        <div class="sf-table-content-child flexbox">
+                            <div class="label">总金额：</div>
+                            <div class="value">123123</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="table-item1" class="sf-table" align="left">
+                <div class="sf-table-head">
+                    <div class="sf-table-head-col">查询记录</div>
                 </div>
                 <div class="sf-table-content">
-                    <div id="sandKinds" class="sf-table-content-col">识别的砂石种类为：</div>
+                    <div class="sf-table-content-col">桂A-12345</div>
+                </div>
+                <div class="sf-table-content">
+                    <div class="sf-table-content-col"></div>
+                </div>
+                <div class="sf-table-content">
+                    <div class="sf-table-content-col"></div>
                 </div>
                 <div class="sf-table-content">
                     <div class="sf-table-content-col"></div>
@@ -282,26 +315,6 @@
                 <div class="sf-btn">查询</div>
             </div>
             <div class="split-line"></div>
-            <div id="table-item1" class="sf-table" align="left">
-                <div class="sf-table-head">
-                    <div class="sf-table-head-col">查询记录</div>
-                </div>
-                <div class="sf-table-content">
-                    <div class="sf-table-content-col">桂A-12345</div>
-                </div>
-                <div class="sf-table-content">
-                    <div class="sf-table-content-col"></div>
-                </div>
-                <div class="sf-table-content">
-                    <div class="sf-table-content-col"></div>
-                </div>
-                <div class="sf-table-content">
-                    <div class="sf-table-content-col"></div>
-                </div>
-                <div class="sf-table-content">
-                    <div class="sf-table-content-col"></div>
-                </div>
-            </div>
         </div>
     </div>
     <script>
@@ -425,7 +438,7 @@
                   res="种类1";
                 else if(data.label == "2")
                   res="种类2"
-                document.getElementById('sandKinds').innerHTML = "识别的砂石种类为："+res
+                document.getElementById('sandKinds').innerHTML = "识别的砂石种类为："+ res
             }
             })
         }
