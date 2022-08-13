@@ -82,3 +82,4 @@ def snapImage(request):
     else:
         print("非linux尚未实现检测!")
         return JsonResponse({"code": 200, "msg": "success", "src": src})
+

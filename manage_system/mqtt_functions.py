@@ -8,6 +8,8 @@ import paho.mqtt.client as mqtt
 from threading import Thread
 import manage_system.gloabl_var as global_var
 
+mqttBroker = "mqtt.eclipseprojects.io"
+
 # 第一个参数固定，第二个参数是工程名称.settings
 os.environ.setdefault('DJANGO_SETTING_MODULE', 'my_django.settings')
 django.setup()
@@ -16,13 +18,14 @@ django.setup()
 # 建立mqtt连接
 def on_connect(client, userdata, flag, rc):
     # print("Connect with the result code " + str(rc))
-    client.subscribe('weight', qos=2)
+    client.subscribe('total_weight', qos=2)
 
 # 接收、处理mqtt消息
 def on_message(client, userdata, msg):
     out = str(msg.payload.decode('utf-8'))
     global_var.set_value("msg", out)
     print(out)
+
 
 
 # mqtt客户端启动函数
@@ -43,9 +46,8 @@ def mqtt_run():
     client.on_message = on_message
     # 绑定 MQTT 服务器地址
     # broker = '192.168.31.228'
-    broker = "mqtt.eclipseprojects.io"
     # MQTT服务器的端口号
-    client.connect(broker)
+    client.connect(mqttBroker)
     # 启动
     mqttthread = Thread(target=mqttfunction)
     mqttthread.start()
