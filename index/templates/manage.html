@@ -36,7 +36,7 @@
             <div class="sf-tab-item" id="tab-item2" onclick="selectTab('item2')">数据库管理</div>
             <div class="sf-tab-item" id="tab-item3" onclick="selectTab('item3')">用户管理</div>
             <div class="sf-tab-item" id="tab-item4" onclick="selectTab('item4')">砂矿设置</div>
-            <div class="sf-tab-item" id="tab-item5" onclick="selectTab('item5')">车辆数据查询</div>
+            <!-- <div class="sf-tab-item" id="tab-item5" onclick="selectTab('item5')">车辆数据查询</div> -->
         </div>
         <!-- 自动/人工控制模块 -->
         <div id="content-item1" class="hidden">
@@ -44,9 +44,9 @@
                 <button id="manual" class="sf-btn" type="default" onclick="toggle()">人工控制</button>
             </div>
             <div class="mb10">
-                <button class="sf-btn">启动系统</button>
+                <button class="sf-btn" onclick="start_system()">启动系统</button>
                 <button class="sf-btn">系统重启</button>
-                <button class="sf-btn">关闭系统</button>
+                <button class="sf-btn" onclick="halt_system()">关闭系统</button>
             </div>
             <div class="mb10">
                 <button class="sf-btn manual-btn" disabled="disabled" onclick="startCar()">开车</button>
@@ -63,11 +63,44 @@
                 <div class="sf-table-content">
                     <div class="sf-table-content-col">system on...</div>
                 </div>
-                <div class="sf-table-content">
+                <div class="sf-table-content flexbox">
                     <img id="snap_jpg" src="" width=320px height=240px  alt="请拍照"/>
+                    <div id="sandKinds" class="sf-table-content-col flexbox-col">
+                        <div class="sf-table-content-child flexbox">
+                            <div class="label">车牌号：</div>
+                            <div class="value"></div>
+                        </div>
+                        <div class="sf-table-content-child flexbox">
+                            <div class="label">砂石种类：</div>
+                            <div class="value"></div>
+                        </div>
+                        <div class="sf-table-content-child flexbox">
+                            <div class="label">地磅重量：</div>
+                            <div class="value"></div>
+                        </div>
+                        <div class="sf-table-content-child flexbox">
+                            <div class="label">单价：</div>
+                            <div class="value"></div>
+                        </div>
+                        <div class="sf-table-content-child flexbox">
+                            <div class="label">总金额：</div>
+                            <div class="value"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="table-item1" class="sf-table" align="left">
+                <div class="sf-table-head">
+                    <div class="sf-table-head-col">查询记录</div>
                 </div>
                 <div class="sf-table-content">
-                    <div id="sandKinds" class="sf-table-content-col">识别的砂石种类为：</div>
+                    <div class="sf-table-content-col">桂A-12345</div>
+                </div>
+                <div class="sf-table-content">
+                    <div class="sf-table-content-col"></div>
+                </div>
+                <div class="sf-table-content">
+                    <div class="sf-table-content-col"></div>
                 </div>
                 <div class="sf-table-content">
                     <div class="sf-table-content-col"></div>
@@ -282,26 +315,6 @@
                 <div class="sf-btn">查询</div>
             </div>
             <div class="split-line"></div>
-            <div id="table-item1" class="sf-table" align="left">
-                <div class="sf-table-head">
-                    <div class="sf-table-head-col">查询记录</div>
-                </div>
-                <div class="sf-table-content">
-                    <div class="sf-table-content-col">桂A-12345</div>
-                </div>
-                <div class="sf-table-content">
-                    <div class="sf-table-content-col"></div>
-                </div>
-                <div class="sf-table-content">
-                    <div class="sf-table-content-col"></div>
-                </div>
-                <div class="sf-table-content">
-                    <div class="sf-table-content-col"></div>
-                </div>
-                <div class="sf-table-content">
-                    <div class="sf-table-content-col"></div>
-                </div>
-            </div>
         </div>
     </div>
     <script>
@@ -419,13 +432,44 @@
                 let path=data.src;
                 let res="";
                 document.getElementById('snap_jpg').src=path
-                if(data.label == "0")
-                  res="空车"
-                else if(data.label == "1")
-                  res="种类1";
-                else if(data.label == "2")
-                  res="种类2"
-                document.getElementById('sandKinds').innerHTML = "识别的砂石种类为："+res
+            }
+            })
+        }
+
+        //控制函数的定时器
+        var timer_control;
+        function start_system(){
+            startCar();
+            //清除计时器，防止重叠
+            clearInterval(timer_control);
+            timer_control = setInterval("get_information_regularly()", 1000);
+        }
+
+        function halt_system(){
+            clearInterval(timer_control);
+        }
+        
+        var last_weight;
+        function get_information_regularly() {
+            $.ajax({
+                'url': 'getInfo',  //访问的url地址
+                'dateType': 'json',  //想要获得的返回数据类型
+                success: function (data){
+                console.log(data);
+                var value_sequence = document.getElementsByClassName("value");
+                if(data.state == "ok")
+                {
+                    if(data.total_weight-last_weight >10)
+                    {
+                        value_sequence[4].innerHTML = data.total_weight-last_weight;
+                    }
+                    value_sequence[0].innerHTML = data.car_id;
+                    value_sequence[1].innerHTML = data.sand_type;
+                    value_sequence[2].innerHTML = data.total_weight;
+                    value_sequence[3].innerHTML = 1;
+                    last_weight = data.total_weight;
+                    document.getElementById('snap_jpg').src=data.src
+                }             
             }
             })
         }
