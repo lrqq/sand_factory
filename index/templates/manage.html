@@ -448,7 +448,8 @@
         function halt_system(){
             clearInterval(timer_control);
         }
-
+        
+        var last_weight;
         function get_information_regularly() {
             $.ajax({
                 'url': 'getInfo',  //访问的url地址
@@ -458,9 +459,16 @@
                 var value_sequence = document.getElementsByClassName("value");
                 if(data.state == "ok")
                 {
+                    if(data.total_weight-last_weight >10)
+                    {
+                        value_sequence[4].innerHTML = data.total_weight-last_weight;
+                    }
                     value_sequence[0].innerHTML = data.car_id;
                     value_sequence[1].innerHTML = data.sand_type;
                     value_sequence[2].innerHTML = data.total_weight;
+                    value_sequence[3].innerHTML = 1;
+                    last_weight = data.total_weight;
+                    document.getElementById('snap_jpg').src=data.src
                 }             
             }
             })
