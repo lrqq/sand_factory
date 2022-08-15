@@ -34,26 +34,28 @@ def publishMsg(request):
 
 def get_info(request):
     res = {}
-    if(global_var.get_value("status") == "weight_ok"):
-        global_var.set_value("status","not")
+    # 如果检测到地磅信号，则进行检测
+    if global_var.get_value("status") == "weight_ok":
+        global_var.set_value("status", "not")
         src = snap_detect()
-        if(src!=False):
+        if src:
             res["src"] = src
-        if(global_var.get_value("detect_status")=="ok"):
-                global client;
-                global_var.set_value("detect_status","not")
-                client = mqtt.Client(client_id=f'client-{random.randint(0, 1000)}', clean_session=False)
-                client.connect(mqttBroker)
-                client.publish("control_msg", "1")
-                time.sleep(1)
-                client.publish("control_msg", "3")
+        if global_var.get_value("detect_status") == "ok":
+            global_var.set_value("detect_status", "not")
+            client = mqtt.Client(client_id=f'client-{random.randint(0, 1000)}', clean_session=False)
+            client.connect(mqttBroker)
+            client.publish("control_msg", "3")
+            time.sleep(1)
+            client.publish("control_msg", "1")
         res["state"] = "ok"
         res["car_id"] = global_var.get_value("car_id")
         res["sand_type"] = global_var.get_value("sand_type")
         res["total_weight"] = global_var.get_value("total_weight")
         return JsonResponse(res)
     else:
-        return JsonResponse({"src":"null","state":"not","car_id": "null","sand_type":"null","total_weight":"null"})
+        return JsonResponse(
+            {"src": "null", "state": "not", "car_id": "null", "sand_type": "null", "total_weight": "null"})
+
 
 def manage_info(request):
     if request.method == 'POST':
@@ -83,14 +85,23 @@ def getImage(request, path):
         return HttpResponse(image_data, content_type="image/png")
     return JsonResponse({"code": 404, "msg": "failed"})
 
-#客户端的浏览器请求了才能执行
+
+# 客户端的浏览器请求了才能执行
 def snapImage(request):
     cap = cv2.VideoCapture(0)
-    ret, frame = cap.read()
+    for i in range(5):
+        time.sleep(0.01)
+        ret, frame = cap.read()
+    if ret:
+        print("snapping...")
+    else:
+        print("can't snap, check index/views.py/snap_detect()")
+        return JsonResponse({"code": 200, "msg": "success", "src": './'})
     date1 = time.time()
     src = 'media/' + str(date1) + '.jpg'
     res = cv2.imwrite(src, frame)
     print("snap...")
+    print(res)
     cap.release()
     if operator.eq(sys.platform, "linux"):
         cmd = "./myNcnnNet " + str(BASE_DIR) + '/' + src
@@ -98,20 +109,30 @@ def snapImage(request):
         res = subprocess.getoutput(cmd)
         print(res)
         print("res=", res[0])
-        global_var.set_value("sand_type",res[0])
+        global_var.set_value("sand_type", res[0])
         return JsonResponse({"code": 200, "msg": "success", "label": res[0], "src": src})
     else:
         print("非linux尚未实现检测!")
         return JsonResponse({"code": 200, "msg": "success", "src": src})
 
-#直接进行拍照和检测
+
+# 直接进行拍照和检测
 def snap_detect():
+    print("prepare to snap...")
     cap = cv2.VideoCapture(0)
-    ret, frame = cap.read()
+    for i in range(5):
+        time.sleep(0.01)
+        ret, frame = cap.read()
+    if ret:
+        print("snapping...")
+    else:
+        print("can't snap, check index/views.py/snap_detect()")
+        return False
     date1 = time.time()
     src = 'media/' + str(date1) + '.jpg'
     res = cv2.imwrite(src, frame)
-    print("snap...")
+    if res:
+        print("snap done.")
     cap.release()
     if operator.eq(sys.platform, "linux"):
         cmd = "./myNcnnNet " + str(BASE_DIR) + '/' + src
@@ -119,10 +140,10 @@ def snap_detect():
         res = subprocess.getoutput(cmd)
         print(res)
         print("res=", res[0])
-        global_var.set_value("sand_type",res[0])
-        global_var.set_value("detect_status","ok")
+        global_var.set_value("sand_type", res[0])
+        global_var.set_value("detect_status", "ok")
         return src
     else:
         print("非linux尚未实现检测!")
-        global_var.set_value("detect_status","not")
+        global_var.set_value("detect_status", "not")
         return False

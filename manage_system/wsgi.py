@@ -18,7 +18,6 @@ import manage_system.gloabl_var as global_var
 
 mqtt_functions.mqtt_run()
 global_var._init()
-# global_var end
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'manage_system.settings')
 
