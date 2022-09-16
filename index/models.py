@@ -10,3 +10,7 @@ class UserInfo(models.Model):
     phone_number = models.CharField(max_length=30, default='', blank=True)
     pre_deposit_amount = models.IntegerField(default=0, blank=True)
 
+
+class SandInfo(models.Model):
+    sand_class = models.CharField(max_length=30, primary_key=True)
+    sand_price = models.IntegerField(default=1, blank=True)

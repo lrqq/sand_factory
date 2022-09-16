@@ -145,5 +145,8 @@ def snap_detect():
         return src
     else:
         print("非linux尚未实现检测!")
-        global_var.set_value("detect_status", "not")
-        return False
+        global_var.set_value("sand_type", 0)
+        global_var.set_value("detect_status", "ok")
+        # global_var.set_value("detect_status", "not")
+        return src
+        # return False
